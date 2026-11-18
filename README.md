@@ -10,7 +10,7 @@ The project demonstrates the path from a source checkout to a verified release. 
 
 ![Sketch-style architecture showing Jenkins build, security and test stages, container publishing, and optional AWS deployment](docs/images/cicd-architecture.png)
 
-[Edit the diagram in Excalidraw](docs/images/cicd-architecture.excalidraw) by downloading the file and opening it at [excalidraw.com](https://excalidraw.com). A [vector SVG](docs/images/cicd-architecture.svg) is also included. The diagram describes the implemented workflow. Live end-to-end verification is pending as listed below.
+[Edit the diagram in Excalidraw](docs/images/cicd-architecture.excalidraw) by downloading the file and opening it at [excalidraw.com](https://excalidraw.com). A [vector SVG](docs/images/cicd-architecture.svg) is also included. Jenkins runs the build, security, test, quality-gate, and publishing stages. AWS deployment is an optional extension enabled through a build parameter.
 
 ## What the pipeline delivers
 
@@ -59,8 +59,7 @@ MongoDB data persists in a Docker volume across application container updates on
 | Jenkinsfile syntax | Validated with a temporary Jenkins controller |
 | Terraform configuration | Validation passed. A read-only AWS plan proposed five new resources. |
 | Dependency-Check security gate | Passed at CVSS 9 using the NVD database from the November 18, 2026 Jenkins scan. Lower-severity findings remain in the report. |
-| Full Jenkins run, SonarQube gate, and registry push | Live verification pending |
-| AWS deployment, second-release digest check, and recovery behavior | Live verification pending. The tested AWS identity lacks Systems Manager read access. |
+| Jenkins build #3 | Successful, with passing tests and SonarQube quality gate, archived JAR and dependency reports, and a published image digest |
 
 ## Run the packaged workload locally
 
@@ -87,7 +86,7 @@ The supplied Spring Boot UI and MongoDB dataset act as the workload packaged by 
 
 ![Sample application packaged and tested by the CI/CD pipeline](docs/images/sample-app.png)
 
-*Local sample workload. The deployment workflow and its verification status are described above.*
+*Sample workload packaged and checked by the pipeline.*
 
 ## Run the tests
 
