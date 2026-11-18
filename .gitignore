@@ -1,0 +1,40 @@
+# Node.js (legacy)
+node_modules
+.nyc_output
+
+# Spring Boot / Java
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+
+# Build & Coverage
+coverage/
+test-results.xml
+.talismanrc
+
+# Other
+.DS_Store
+solar-system.png
+.vscode/
+.metals/
+.dc-data/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json

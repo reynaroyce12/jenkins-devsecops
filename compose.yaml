@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      target: app
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    environment:
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/superData}
+    ports:
+      - "127.0.0.1:3001:3001"
+
+  mongo:
+    image: mongo:7.0
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - 'quit(db.adminCommand({ping: 1}).ok === 1 ? 0 : 1)'
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  seed:
+    image: mongo:7.0
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./data/textbooks_data.json:/seed/textbooks_data.json:ro
+    entrypoint: [mongoimport]
+    command:
+      - --uri=mongodb://mongo:27017/superData
+      - --collection=textbooks
+      - --file=/seed/textbooks_data.json
+      - --jsonArray
+      - --mode=upsert
+      - --stopOnError
+
+volumes:
+  mongo-data:

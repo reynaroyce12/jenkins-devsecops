@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+
+dnf install -y docker jq
+systemctl enable --now docker
+install -d /opt/textbook-library
+base64 --decode <<'DEPLOY_SCRIPT' > /usr/local/bin/deploy-textbook-library
+${deploy_script}
+DEPLOY_SCRIPT
+chmod 0755 /usr/local/bin/deploy-textbook-library
+base64 --decode <<'SEED_DATA' > /opt/textbook-library/textbooks_data.json
+${seed_data}
+SEED_DATA
