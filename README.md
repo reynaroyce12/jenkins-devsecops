@@ -1,8 +1,8 @@
 # CI/CD Pipeline with Jenkins, Docker & AWS
 
-This project uses Jenkins to build a Java app, check its code and dependencies, run tests, and publish a Docker image. It also includes an optional AWS deployment stage.
+This project is a CI/CD pipeline built with Jenkins. It takes a Java app from GitHub, builds it, runs security checks and tests, and publishes the app to Docker Hub.
 
-A small Spring Boot app with MongoDB is used to show the pipeline in action.
+It uses a small Spring Boot app with MongoDB as the sample app. The repo also includes Terraform files and scripts for optional AWS deployment.
 
 ## Architecture
 
@@ -10,24 +10,23 @@ A small Spring Boot app with MongoDB is used to show the pipeline in action.
 
 [Editable Excalidraw file](docs/images/cicd-architecture.excalidraw) · [SVG diagram](docs/images/cicd-architecture.svg)
 
-## How the pipeline works
+## What it does
 
-| Step | What it does | Tools |
-|---|---|---|
-| Build | Downloads the code and compiles the app | Git, Maven, Java 17 |
-| Scan dependencies | Checks libraries for known vulnerabilities and available updates | OWASP Dependency-Check, Maven |
-| Test | Runs 6 unit tests and 10 tests with a real MongoDB container | JUnit, Testcontainers |
-| Check code quality | Creates a coverage report and checks the SonarQube quality gate | JaCoCo, SonarQube |
-| Package | Saves the app as a JAR and publishes an ARM64 Docker image | Maven, Docker Buildx, Docker Hub |
-| Deploy to AWS — optional | Sets up EC2 and runs the published image | Terraform, AWS Systems Manager |
+1. Jenkins pulls the code from GitHub and builds it with Maven and Java 17.
+2. OWASP Dependency-Check scans the libraries for known vulnerabilities. Maven also checks for available updates.
+3. The pipeline runs 6 unit tests and 10 integration tests. The integration tests use a real MongoDB container.
+4. JaCoCo creates a coverage report, and SonarQube checks the code quality.
+5. Jenkins saves the JAR, builds an ARM64 Docker image, and pushes it to Docker Hub.
 
-The build stops if tests fail or the SonarQube quality gate fails. Dependency-Check stops the build for findings with a CVSS score of 9 or higher.
+The pipeline stops if tests or the SonarQube quality gate fail. The dependency scan also stops the build for vulnerabilities with a CVSS score of 9 or higher.
 
 ## Build results
 
-**Jenkins build #3 passed**, including all 16 tests and the SonarQube quality gate.
+Jenkins build #3 completed successfully. All 16 tests and the SonarQube quality gate passed.
 
-Jenkins saves the test results, dependency and coverage reports, application JAR, and `published-image.txt`. Docker Hub stores the image with the Jenkins build number as its tag. The text file records the image's unique digest, which identifies the exact image to deploy.
+Each build saves the test results, dependency and coverage reports, and the application JAR in Jenkins. It also saves `published-image.txt`, which contains the exact Docker image reference.
+
+The image appears in Docker Hub with the Jenkins build number as its tag.
 
 ## Run locally
 
@@ -44,7 +43,7 @@ To stop the app, run `docker compose down`.
 
 ## Sample app
 
-The textbook app is the example packaged by this pipeline.
+This is the sample app that the pipeline builds, tests, and packages.
 
 ![Sample app running locally](docs/images/sample-app.png)
 
@@ -64,10 +63,10 @@ Open `target/site/jacoco/index.html` to view coverage.
 
 Follow the [setup guide](docs/operations.md) to configure Jenkins, SonarQube, and Docker Hub.
 
-AWS deployment is controlled by the `DEPLOY_TO_AWS` checkbox, which is off by default. The optional stage uses Terraform to create EC2 resources and Systems Manager to start the app, check its health, and look up a sample record. It uses the exact image recorded by the publishing stage.
+The project also includes an optional AWS stage. Terraform creates the EC2 resources, and Systems Manager runs the published image and checks the app. You can enable this stage with `DEPLOY_TO_AWS` in Jenkins. It is off by default.
 
 The setup guide includes AWS permissions, build parameters, and cleanup commands. Store tokens in Jenkins credentials. Use `.env.example` as a template for local settings.
 
 ## Background
 
-This project grew from an SE441 course exercise. The Spring Boot app and sample data came from the course starter repositories. The project adds the Jenkins pipeline, Docker packaging, and Terraform deployment files.
+This project started as an SE441 course exercise. The sample app and data came from the course starter repositories. The work here adds the Jenkins pipeline, Docker packaging, and Terraform deployment files.
