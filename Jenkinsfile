@@ -40,14 +40,26 @@ pipeline {
                     steps {
                         withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
                             sh '''
-                                mvn -B org.owasp:dependency-check-maven:check \
+                                mvn -B org.owasp:dependency-check-maven:13.0.0:check \
                                 -DfailBuildOnCVSS=9 \
                                 -DnvdApiKey=$NVD_API_KEY \
                                 -DdataDirectory="$WORKSPACE/.dc-data" \
                                 -Dformats=HTML,XML
                             '''
                         }
-                        stash includes: 'target/dependency-check-report.*', name: 'dc-reports'
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'target/dependency-check-report.*', allowEmptyArchive: true
+                            publishHTML(target: [
+                                allowMissing: true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'target',
+                                reportFiles: 'dependency-check-report.html',
+                                reportName: 'Dependency Check HTML Report'
+                            ])
+                        }
                     }
                 }
                 stage('Maven Dependency Audit') {
@@ -61,16 +73,7 @@ pipeline {
 
         stage('Publish Dependency-Check Results') {
             steps {
-                unstash 'dc-reports'
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target',
-                    reportFiles: 'dependency-check-report.html',
-                    reportName: 'Dependency Check HTML Report'
-                ])
             }
         }
 

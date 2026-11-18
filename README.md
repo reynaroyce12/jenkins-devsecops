@@ -54,11 +54,12 @@ MongoDB data persists in a Docker volume across application container updates on
 | Check | Result |
 |---|---|
 | Local Docker Compose demo and database seed | Passed, including sample record lookup and repeated import with nine total records |
-| Unit and MongoDB integration suites | All 16 tests passed locally on Java 21. Jenkins is configured to use Java 17. |
+| Unit and MongoDB integration suites | All 16 tests passed locally on Java 17 with Spring Boot 4.0.9. |
 | Combined coverage and JAR packaging | Verified locally |
 | Jenkinsfile syntax | Validated with a temporary Jenkins controller |
 | Terraform configuration | Validation passed. A read-only AWS plan proposed five new resources. |
-| Full Jenkins run, current security scan, SonarQube gate, and registry push | Live verification pending |
+| Dependency-Check security gate | Passed at CVSS 9 using the NVD database from the November 18, 2026 Jenkins scan. Lower-severity findings remain in the report. |
+| Full Jenkins run, SonarQube gate, and registry push | Live verification pending |
 | AWS deployment, second-release digest check, and recovery behavior | Live verification pending. The tested AWS identity lacks Systems Manager read access. |
 
 ## Run the packaged workload locally
