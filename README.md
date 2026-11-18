@@ -8,7 +8,6 @@ It uses a small Spring Boot app with MongoDB as the sample app. The repo also in
 
 ![CI/CD pipeline from code checkout to Docker publishing and optional AWS deployment](docs/images/cicd-architecture.png)
 
-[Editable Excalidraw file](docs/images/cicd-architecture.excalidraw) · [SVG diagram](docs/images/cicd-architecture.svg)
 
 ## What it does
 
@@ -20,13 +19,6 @@ It uses a small Spring Boot app with MongoDB as the sample app. The repo also in
 
 The pipeline stops if tests or the SonarQube quality gate fail. The dependency scan also stops the build for vulnerabilities with a CVSS score of 9 or higher.
 
-## Build results
-
-Jenkins build #3 completed successfully. All 16 tests and the SonarQube quality gate passed.
-
-Each build saves the test results, dependency and coverage reports, and the application JAR in Jenkins. It also saves `published-image.txt`, which contains the exact Docker image reference.
-
-The image appears in Docker Hub with the Jenkins build number as its tag.
 
 ## Run locally
 
@@ -40,12 +32,6 @@ docker compose logs -f app
 Once the app starts, open [localhost:3001](http://localhost:3001) and search for ID `0`. Compose starts MongoDB and loads nine sample records automatically.
 
 To stop the app, run `docker compose down`.
-
-## Sample app
-
-This is the sample app that the pipeline builds, tests, and packages.
-
-![Sample app running locally](docs/images/sample-app.png)
 
 ## Run the tests
 
@@ -67,6 +53,3 @@ The project also includes an optional AWS stage. Terraform creates the EC2 resou
 
 The setup guide includes AWS permissions, build parameters, and cleanup commands. Store tokens in Jenkins credentials. Use `.env.example` as a template for local settings.
 
-## Background
-
-This project started as an SE441 course exercise. The sample app and data came from the course starter repositories. The work here adds the Jenkins pipeline, Docker packaging, and Terraform deployment files.
